@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://b60l0b850mrkh"]
+
+[ext_resource type="Texture2D" uid="uid://dbpkkkeev1wrf" path="res://assets/sprites/arrow.png" id="1_5a8u6"]
+[ext_resource type="Script" uid="uid://cbxoxujy24tv" path="res://scripts/path_cell.gd" id="1_f2c7p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mc2lg"]
+size = Vector2(30, 29)
+
+[node name="PathCell" type="Node2D" unique_id=529589055]
+script = ExtResource("1_f2c7p")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1681219415]
+texture_filter = 1
+texture = ExtResource("1_5a8u6")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=807094384]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=853491479]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_mc2lg")
