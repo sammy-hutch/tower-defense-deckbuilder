@@ -1,10 +1,13 @@
 extends Node2D
 
+@onready var sprite_2d: Sprite2D = $Sprite2D
+
 var tile_size: Vector2i = Vector2i(32,32)
 var tile_map_layer: TileMapLayer
 var neighbours: Array = []
 var path: Node2D
 var tile_pos: Vector2i
+var flow_direction = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -24,7 +27,7 @@ func setup():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	sprite_2d.rotation = flow_direction
 
 func _find_neighbours():
 	for cell in tile_map_layer.get_used_cells():
