@@ -4,9 +4,11 @@ extends Node2D
 
 const path_cell_scene = preload("res://scenes/path_cell.tscn")
 
+var cell_lookup := {}
+var flow_map := {}
+
 var path_cells: Array = []
 var path_tiles: Array = []
-var flow_map: Array = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -42,72 +44,79 @@ func _build_path():
 	
 	for cell in path_cells:
 		cell.setup()
+		cell_lookup[cell.tile_pos] = cell
+
 
 func _find_shortest_routes():
-	var end_tiles = tile_map_layer.get_used_cells_by_id(-1,Vector2i(3,0),-1)
+	var end_tiles = tile_map_layer.get_used_cells_by_id(-1, Vector2i(3,0), -1)
 	var paths = []
 	
 	for end_tile in end_tiles:
-		var discovered_new_tiles = true
-		var path = [{"tile":end_tile, "steps": 0, "prev_tile": end_tile}]
-		var searched_tiles = [end_tile]
-		var active_tiles = path
+		var queue = []
+		var visited = {}
+		var path = []
 		
-		while discovered_new_tiles:
-			discovered_new_tiles = false
-			var next_active_tiles = []
-			for tile in active_tiles:
-				var current_step = tile["steps"] + 1
-				var coords = tile["tile"]
-				var possible_neighbours = [
-					Vector2i(coords.x, coords.y - 1),		# n
-					Vector2i(coords.x + 1, coords.y - 1),	# ne
-					Vector2i(coords.x + 1, coords.y),		# e
-					Vector2i(coords.x + 1, coords.y + 1),	# se
-					Vector2i(coords.x, coords.y + 1),		# s
-					Vector2i(coords.x - 1, coords.y + 1),	# sw
-					Vector2i(coords.x - 1, coords.y),		# w
-					Vector2i(coords.x - 1, coords.y - 1)	# nw
-					]
-				
-				for neighbour in possible_neighbours:
-					if path_tiles.has(neighbour) and not searched_tiles.has(neighbour):
-						var tile_info = {
-							"tile": neighbour, 
-							"steps": current_step, 
+		queue.append({"tile": end_tile, "steps": 0, "prev_tile": end_tile})
+		visited[end_tile] = 0
+		
+		while queue.size() > 0:
+			var current = queue.pop_front()
+			path.append(current)
+			
+			var coords = current["tile"]
+			var next_step = current["steps"] + 1
+			var neighbours = [
+				Vector2i(coords.x, coords.y - 1),
+				Vector2i(coords.x + 1, coords.y - 1),
+				Vector2i(coords.x + 1, coords.y),
+				Vector2i(coords.x + 1, coords.y + 1),
+				Vector2i(coords.x, coords.y + 1),
+				Vector2i(coords.x - 1, coords.y + 1),
+				Vector2i(coords.x - 1, coords.y),
+				Vector2i(coords.x - 1, coords.y - 1)
+			]
+			
+			for n in neighbours:
+				if path_tiles.has(n):
+					if not visited.has(n) or next_step < visited[n]:
+						visited[n] = next_step
+						queue.append({
+							"tile": n,
+							"steps": next_step,
 							"prev_tile": coords
-							}
-						path.append(tile_info)
-						next_active_tiles.append(tile_info)
-						searched_tiles.append(neighbour)
-						discovered_new_tiles = true
-				
-			active_tiles = next_active_tiles
+						})
 		
 		paths.append({"target": end_tile, "tiles": path})
-	
+
+	# Build flow map
 	flow_map.clear()
 	for path in paths:
-		for tile in path["tiles"]:
-			_update_flow_map(tile)
-	
-	for cell_info in flow_map:
+		for tile_info in path["tiles"]:
+			_update_flow_map(tile_info)
+
+
+	# Apply flow directions to cells
+	for cell_info in flow_map.values():
 		_update_path_cells(cell_info)
-			
-		
+
+
 func _update_flow_map(new_tile):
-	for i in range(flow_map.size()):
-		if flow_map[i]["tile"] == new_tile.tile:
-			if new_tile.steps < flow_map[i]["steps"]:
-				flow_map[i] = new_tile
-			return
-	flow_map.append(new_tile)
+	var tile = new_tile["tile"]
+	
+	if flow_map.has(tile):
+		if new_tile["steps"] < flow_map[tile]["steps"]:
+			flow_map[tile] = new_tile
+	else:
+		flow_map[tile] = new_tile
+
 
 func _update_path_cells(cell_info):
-	for cell in path_cells:
-		if cell.tile_pos == cell_info.tile:
-			var from = cell_info.tile
-			var to = cell_info.prev_tile
-			var vector = Vector2(to.x - from.x, to.y - from.y)
-			var angle = vector.angle() + (0.5 * PI)
-			cell.flow_direction = angle
+	var cell = cell_lookup.get(cell_info["tile"], null)
+	if cell == null:
+		return
+	
+	var from = cell_info["tile"]
+	var to = cell_info["prev_tile"]
+	var vector = Vector2(to.x - from.x, to.y - from.y)
+	var angle = vector.angle() + (0.5*PI)
+	cell.flow_direction = angle
