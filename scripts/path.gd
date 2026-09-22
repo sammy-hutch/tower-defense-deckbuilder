@@ -1,8 +1,10 @@
 extends Node2D
 
 @onready var tile_map_layer: TileMapLayer = $"../TileMapLayer"
+@onready var t: Timer = $"../Timer"
 
 const path_cell_scene = preload("res://scenes/path_cell.tscn")
+const mob_scene = preload("res://scenes/mob.tscn")
 
 var cell_lookup := {}
 var flow_map := {}
@@ -14,6 +16,10 @@ var path_tiles: Array = []
 func _ready() -> void:
 	_build_path()
 	_find_shortest_routes()
+	
+	t.wait_time = 2.0
+	t.autostart = true
+	t.timeout.connect(_on_timer_timeout)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -56,7 +62,7 @@ func _find_shortest_routes():
 		var visited = {}
 		var path = []
 		
-		queue.append({"tile": end_tile, "steps": 0, "prev_tile": end_tile})
+		queue.append({"tile": end_tile, "steps": 0, "distance": 0, "prev_tile": end_tile})
 		visited[end_tile] = 0
 		
 		while queue.size() > 0:
@@ -65,7 +71,7 @@ func _find_shortest_routes():
 			
 			var coords = current["tile"]
 			var next_step = current["steps"] + 1
-			var neighbours = [
+			var neighbours: Array[Vector2i] = [
 				Vector2i(coords.x, coords.y - 1),
 				Vector2i(coords.x + 1, coords.y - 1),
 				Vector2i(coords.x + 1, coords.y),
@@ -78,11 +84,13 @@ func _find_shortest_routes():
 			
 			for n in neighbours:
 				if path_tiles.has(n):
-					if not visited.has(n) or next_step < visited[n]:
-						visited[n] = next_step
+					var dist = snapped(n.length(), 0.01) + current["distance"]
+					if not visited.has(n) or dist < visited[n]:
+						visited[n] = dist
 						queue.append({
 							"tile": n,
 							"steps": next_step,
+							"distance": dist,
 							"prev_tile": coords
 						})
 		
@@ -100,11 +108,32 @@ func _find_shortest_routes():
 		_update_path_cells(cell_info)
 
 
+func _spawn_mob():
+	var entry_points = tile_map_layer.get_used_cells_by_id(-1, Vector2i(2,0), -1)
+	var entry_point: Vector2i
+	
+	if len(entry_points) > 0:
+		entry_point = entry_points.pick_random()
+	
+	var world_pos = tile_map_layer.map_to_local(entry_point)
+	var tile_size = tile_map_layer.tile_set.tile_size.x
+	var x_fuzz = randi_range(-tile_size, tile_size)
+	var y_fuzz = randi_range(-tile_size, tile_size)
+	world_pos += Vector2(x_fuzz, y_fuzz)
+	
+	var new_mob = mob_scene.instantiate()
+	new_mob.position = world_pos
+	
+	add_child(new_mob)
+	
+
+###### HELPER FUNCTIONS ######
+
 func _update_flow_map(new_tile):
 	var tile = new_tile["tile"]
 	
 	if flow_map.has(tile):
-		if new_tile["steps"] < flow_map[tile]["steps"]:
+		if new_tile["distance"] < flow_map[tile]["distance"]:
 			flow_map[tile] = new_tile
 	else:
 		flow_map[tile] = new_tile
@@ -120,3 +149,10 @@ func _update_path_cells(cell_info):
 	var vector = Vector2(to.x - from.x, to.y - from.y)
 	var angle = vector.angle() + (0.5*PI)
 	cell.flow_direction = angle
+	cell.flow_vector = vector
+
+
+###### Signals ######
+
+func _on_timer_timeout() -> void:
+	_spawn_mob()

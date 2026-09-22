@@ -8,6 +8,7 @@ var neighbours: Array = []
 var path: Node2D
 var tile_pos: Vector2i
 var flow_direction = 0
+var flow_vector: Vector2
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
