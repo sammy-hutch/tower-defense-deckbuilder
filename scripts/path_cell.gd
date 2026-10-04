@@ -1,6 +1,7 @@
 extends Node2D
 
 @onready var sprite_2d: Sprite2D = $Sprite2D
+@onready var area_2d: Area2D = $Area2D
 
 var tile_size: Vector2i = Vector2i(32,32)
 var tile_map_layer: TileMapLayer
@@ -23,6 +24,8 @@ func load_vars(tile_map_layer_ref, coords, tile_size_ref, path_ref):
 	path = path_ref
 
 func setup():
+	add_to_group("tiles")
+	area_2d.add_to_group("tiles")
 	_find_neighbours()
 	_pathfind()
 
