@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bgcbw8x7xm0uf" path="res://assets/sprites/tileMap3.png" id="1_paxxb"]
 [ext_resource type="Script" uid="uid://c5r0yfdhcddxl" path="res://scripts/path.gd" id="2_paxxb"]
+[ext_resource type="PackedScene" uid="uid://mvmi1gr1amcf" path="res://scenes/archer_tower.tscn" id="3_gldc4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gldc4"]
 texture = ExtResource("1_paxxb")
@@ -27,3 +28,6 @@ tile_set = SubResource("TileSet_mc2lg")
 script = ExtResource("2_paxxb")
 
 [node name="Timer" type="Timer" parent="." unique_id=788103350]
+
+[node name="ArcherTower" parent="." unique_id=22916751 instance=ExtResource("3_gldc4")]
+position = Vector2(48, 208)

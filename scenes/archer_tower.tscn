@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://mvmi1gr1amcf"]
+
+[ext_resource type="Script" uid="uid://d3anjmut2ft6u" path="res://scripts/archer_tower.gd" id="1_sb3hj"]
+[ext_resource type="Texture2D" uid="uid://bwycm1poclq48" path="res://assets/sprites/archer_tower.png" id="2_o73lx"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mc2lg"]
+radius = 102.0049
+
+[node name="ArcherTower" type="Node2D" unique_id=22916751]
+script = ExtResource("1_sb3hj")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=19074537]
+texture_filter = 1
+texture = ExtResource("2_o73lx")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=981472276]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=305118479]
+shape = SubResource("CircleShape2D_mc2lg")
+
+[node name="Cooldown" type="Timer" parent="." unique_id=1634263967]
+
+[connection signal="area_entered" from="Area2D" to="." method="_on_area_2d_area_entered"]
+[connection signal="area_exited" from="Area2D" to="." method="_on_area_2d_area_exited"]
+[connection signal="timeout" from="Cooldown" to="." method="_on_cooldown_timeout"]
