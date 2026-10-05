@@ -31,3 +31,6 @@ script = ExtResource("2_paxxb")
 
 [node name="ArcherTower" parent="." unique_id=22916751 instance=ExtResource("3_gldc4")]
 position = Vector2(48, 208)
+
+[node name="ArcherTower2" parent="." unique_id=1204962252 instance=ExtResource("3_gldc4")]
+position = Vector2(240, 208)
