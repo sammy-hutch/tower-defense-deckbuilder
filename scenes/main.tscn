@@ -2,6 +2,10 @@
 
 [ext_resource type="Script" uid="uid://dt21mol2wsfv2" path="res://scripts/main.gd" id="1_0wfyh"]
 [ext_resource type="PackedScene" uid="uid://damf1bpw6pper" path="res://scenes/map.tscn" id="2_sugp2"]
+[ext_resource type="Texture2D" uid="uid://dsgom5ct3ruox" path="res://assets/sprites/DBTB_UI_1.png" id="3_sugp2"]
+[ext_resource type="Script" uid="uid://bylkhno2xs5q7" path="res://scripts/ui.gd" id="3_tefeu"]
+[ext_resource type="Texture2D" uid="uid://brsfikm6ysvxg" path="res://assets/sprites/DBTD_scroll_rolled_1.png" id="5_o6xl0"]
+[ext_resource type="Texture2D" uid="uid://chm3mso154tro" path="res://assets/sprites/DBTD_scroll_parchment_1.png" id="5_tefeu"]
 
 [node name="Main" type="Node2D" unique_id=1391042497]
 script = ExtResource("1_0wfyh")
@@ -13,19 +17,92 @@ script = ExtResource("1_0wfyh")
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1670911713]
 
 [node name="UI" type="Control" parent="CanvasLayer" unique_id=81550482]
+custom_minimum_size = Vector2(640, 360)
+custom_maximum_size = Vector2(640, 360)
 layout_mode = 3
 anchors_preset = 0
+script = ExtResource("3_tefeu")
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/UI" unique_id=897702498]
+texture_filter = 1
+custom_minimum_size = Vector2(640, 360)
+custom_maximum_size = Vector2(640, 360)
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
+texture = ExtResource("3_sugp2")
+
+[node name="PalaceScrollClip" type="Control" parent="CanvasLayer/UI" unique_id=701653766]
+clip_contents = true
+anchors_preset = 0
+offset_left = 31.0
+offset_top = 48.0
+offset_right = 49.0
+offset_bottom = 128.0
+
+[node name="PalaceScroll" type="TextureRect" parent="CanvasLayer/UI/PalaceScrollClip" unique_id=85004216]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_tefeu")
+expand_mode = 1
+stretch_mode = 2
+
+[node name="MarketScrollClip" type="Control" parent="CanvasLayer/UI" unique_id=461446586]
+clip_contents = true
+anchors_preset = 0
+offset_left = 31.0
+offset_top = 140.0
+offset_right = 49.0
+offset_bottom = 220.0
+
+[node name="MarketScroll" type="TextureRect" parent="CanvasLayer/UI/MarketScrollClip" unique_id=2000547216]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_tefeu")
+expand_mode = 1
+stretch_mode = 2
+
+[node name="GarrisonScrollClip" type="Control" parent="CanvasLayer/UI" unique_id=1664028668]
+clip_contents = true
+anchors_preset = 0
+offset_left = 31.0
+offset_top = 232.0
+offset_right = 49.0
+offset_bottom = 312.0
+
+[node name="GarrisonScroll" type="TextureRect" parent="CanvasLayer/UI/GarrisonScrollClip" unique_id=1359117766]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_tefeu")
+expand_mode = 1
+stretch_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/UI" unique_id=459238025]
 custom_minimum_size = Vector2(640, 360)
+custom_maximum_size = Vector2(640, 360)
 layout_mode = 0
 offset_right = 644.0
 offset_bottom = 368.0
+theme_override_constants/separation = 0
 
 [node name="TopBar" type="HBoxContainer" parent="CanvasLayer/UI/VBoxContainer" unique_id=627378225]
 custom_minimum_size = Vector2(640, 40)
+custom_maximum_size = Vector2(640, 40)
 layout_mode = 2
 
 [node name="Button" type="Button" parent="CanvasLayer/UI/VBoxContainer/TopBar" unique_id=1351294164]
@@ -40,9 +117,49 @@ text = "atyjrsyjxgfdbzfsgsae5r"
 custom_minimum_size = Vector2(640, 280)
 layout_mode = 2
 
-[node name="ShopSelector" type="VBoxContainer" parent="CanvasLayer/UI/VBoxContainer/MainView" unique_id=417250163]
-custom_minimum_size = Vector2(40, 280)
+[node name="ShopSelector" type="Control" parent="CanvasLayer/UI/VBoxContainer/MainView" unique_id=528195077]
+custom_minimum_size = Vector2(64, 280)
+custom_maximum_size = Vector2(64, 280)
 layout_mode = 2
+
+[node name="PalaceButton" type="TextureButton" parent="CanvasLayer/UI/VBoxContainer/MainView/ShopSelector" unique_id=316825363]
+texture_filter = 1
+custom_minimum_size = Vector2(18, 80)
+custom_maximum_size = Vector2(18, 80)
+layout_mode = 0
+offset_left = 31.0
+offset_top = 8.0
+offset_right = 49.0
+offset_bottom = 88.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture_normal = ExtResource("5_o6xl0")
+
+[node name="MarketButton" type="TextureButton" parent="CanvasLayer/UI/VBoxContainer/MainView/ShopSelector" unique_id=384498588]
+texture_filter = 1
+custom_minimum_size = Vector2(18, 80)
+custom_maximum_size = Vector2(18, 80)
+layout_mode = 0
+offset_left = 31.0
+offset_top = 100.0
+offset_right = 49.0
+offset_bottom = 180.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture_normal = ExtResource("5_o6xl0")
+
+[node name="GarrisonButton" type="TextureButton" parent="CanvasLayer/UI/VBoxContainer/MainView/ShopSelector" unique_id=618357962]
+texture_filter = 1
+custom_minimum_size = Vector2(18, 80)
+custom_maximum_size = Vector2(18, 80)
+layout_mode = 0
+offset_left = 31.0
+offset_top = 192.0
+offset_right = 49.0
+offset_bottom = 272.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture_normal = ExtResource("5_o6xl0")
 
 [node name="MapWindow" type="Control" parent="CanvasLayer/UI/VBoxContainer/MainView" unique_id=1730899440]
 clip_children = 1
@@ -53,3 +170,5 @@ mouse_filter = 2
 [node name="BottomBar" type="HBoxContainer" parent="CanvasLayer/UI/VBoxContainer" unique_id=684191337]
 custom_minimum_size = Vector2(640, 40)
 layout_mode = 2
+
+[connection signal="pressed" from="CanvasLayer/UI/VBoxContainer/MainView/ShopSelector/PalaceButton" to="CanvasLayer/UI" method="_on_palace_button_pressed"]
