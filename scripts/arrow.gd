@@ -3,7 +3,7 @@ extends Node2D
 var start_location: Vector2
 var target_location: Vector2
 var direction: Vector2
-var speed: float = 200.0
+var speed: float = 300.0
 var collision_object: CharacterBody2D
 
 var max_distance: float = 0.0
