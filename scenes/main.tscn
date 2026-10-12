@@ -105,14 +105,6 @@ custom_minimum_size = Vector2(640, 40)
 custom_maximum_size = Vector2(640, 40)
 layout_mode = 2
 
-[node name="Button" type="Button" parent="CanvasLayer/UI/VBoxContainer/TopBar" unique_id=1351294164]
-layout_mode = 2
-text = "fdhsdhjsgnd<fbn"
-
-[node name="Button2" type="Button" parent="CanvasLayer/UI/VBoxContainer/TopBar" unique_id=1394035112]
-layout_mode = 2
-text = "atyjrsyjxgfdbzfsgsae5r"
-
 [node name="MainView" type="HBoxContainer" parent="CanvasLayer/UI/VBoxContainer" unique_id=769095362]
 custom_minimum_size = Vector2(640, 280)
 layout_mode = 2
@@ -121,6 +113,20 @@ layout_mode = 2
 custom_minimum_size = Vector2(64, 280)
 custom_maximum_size = Vector2(64, 280)
 layout_mode = 2
+
+[node name="PalaceScrollLabel" type="Label" parent="CanvasLayer/UI/VBoxContainer/MainView/ShopSelector" unique_id=262441873]
+modulate = Color(0, 0, 0, 1)
+texture_filter = 1
+layout_mode = 0
+offset_left = 14.0
+offset_top = 76.0
+offset_right = 73.0
+offset_bottom = 93.0
+rotation = -1.5707964
+theme_override_font_sizes/font_size = 10
+text = "Palace"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="PalaceButton" type="TextureButton" parent="CanvasLayer/UI/VBoxContainer/MainView/ShopSelector" unique_id=316825363]
 texture_filter = 1
@@ -135,6 +141,20 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 texture_normal = ExtResource("5_o6xl0")
 
+[node name="MarketScrollLabel2" type="Label" parent="CanvasLayer/UI/VBoxContainer/MainView/ShopSelector" unique_id=1981685104]
+modulate = Color(0, 0, 0, 1)
+texture_filter = 1
+layout_mode = 0
+offset_left = 14.0
+offset_top = 169.0
+offset_right = 73.0
+offset_bottom = 186.0
+rotation = -1.5707964
+theme_override_font_sizes/font_size = 10
+text = "Market"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="MarketButton" type="TextureButton" parent="CanvasLayer/UI/VBoxContainer/MainView/ShopSelector" unique_id=384498588]
 texture_filter = 1
 custom_minimum_size = Vector2(18, 80)
@@ -147,6 +167,20 @@ offset_bottom = 180.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 texture_normal = ExtResource("5_o6xl0")
+
+[node name="GarrisonScrollLabel3" type="Label" parent="CanvasLayer/UI/VBoxContainer/MainView/ShopSelector" unique_id=596201187]
+modulate = Color(0, 0, 0, 1)
+texture_filter = 1
+layout_mode = 0
+offset_left = 14.0
+offset_top = 261.0
+offset_right = 74.0
+offset_bottom = 278.0
+rotation = -1.5707964
+theme_override_font_sizes/font_size = 10
+text = "Garrison"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="GarrisonButton" type="TextureButton" parent="CanvasLayer/UI/VBoxContainer/MainView/ShopSelector" unique_id=618357962]
 texture_filter = 1
@@ -170,5 +204,19 @@ mouse_filter = 2
 [node name="BottomBar" type="HBoxContainer" parent="CanvasLayer/UI/VBoxContainer" unique_id=684191337]
 custom_minimum_size = Vector2(640, 40)
 layout_mode = 2
+alignment = 2
+
+[node name="NextWaveButton" type="Button" parent="CanvasLayer/UI" unique_id=890409092]
+custom_minimum_size = Vector2(64, 24)
+custom_maximum_size = Vector2(64, 24)
+layout_mode = 0
+offset_left = 568.0
+offset_top = 328.0
+offset_right = 632.0
+offset_bottom = 352.0
+theme_override_font_sizes/font_size = 10
+text = "Next 
+Wave"
 
 [connection signal="pressed" from="CanvasLayer/UI/VBoxContainer/MainView/ShopSelector/PalaceButton" to="CanvasLayer/UI" method="_on_palace_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/UI/NextWaveButton" to="CanvasLayer/UI" method="_on_next_wave_button_pressed"]

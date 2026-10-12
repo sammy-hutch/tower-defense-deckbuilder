@@ -1,6 +1,9 @@
 extends Control
 
-# Menu Scrolls nodes
+# Main parent node
+@onready var main: Node2D = $"../.."
+
+# Menu Scrolls children nodes
 @onready var palace_button: TextureButton = $VBoxContainer/MainView/ShopSelector/PalaceButton
 @onready var palace_scroll_clip: Control = $PalaceScrollClip
 @onready var palace_scroll_graphic: TextureRect = $PalaceScrollClip/PalaceScroll
@@ -10,6 +13,9 @@ extends Control
 @onready var garrison_button: TextureButton = $VBoxContainer/MainView/ShopSelector/GarrisonButton
 @onready var garrison_scroll_clip: Control = $GarrisonScrollClip
 @onready var garrison_scroll_graphic: TextureRect = $GarrisonScrollClip/GarrisonScroll
+
+# other children nodes
+@onready var next_wave_button: Button = $NextWaveButton
 
 # general scroll vars
 var scroll_rolled_width := 0
@@ -21,6 +27,10 @@ var scroll_open: bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	# connect signals
+	Events.wave_started.connect(_on_wave_started)
+	Events.wave_finished.connect(_on_wave_finished)
+	
 	# set config objects based on child nodes
 	var palace_cfg = {
 		"button": palace_button,
@@ -98,3 +108,15 @@ func _on_scroll_button_pressed(cfg: Dictionary) -> void:
 		cfg["open"] = new_open_val
 		print("open: %s" % open)
 	)
+
+func _on_wave_started() -> void:
+	next_wave_button.disabled = true
+	next_wave_button.text = "Wave: " + str(main.current_wave) + "/" + str(main.total_waves)
+
+func _on_wave_finished() -> void:
+	next_wave_button.disabled = false
+	next_wave_button.text = "Next\nWave"
+
+
+func _on_next_wave_button_pressed() -> void:
+	Events.wave_start_requested.emit()

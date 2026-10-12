@@ -6,25 +6,34 @@ extends Node2D
 const path_cell_scene = preload("res://scenes/path_cell.tscn")
 const mob_scene = preload("res://scenes/mob.tscn")
 
+# ref vars waiting to populate
+var main: Node2D
+
 var cell_lookup := {}
 var flow_map := {}
 
 var path_cells: Array = []
 var path_tiles: Array = []
 
+var current_wave_data: Array
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	# set signals
+	Events.wave_started.connect(_on_wave_started)
+	
 	_build_path()
 	_find_shortest_routes()
 	
-	t.wait_time = 2.0
-	t.autostart = true
 	t.timeout.connect(_on_timer_timeout)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
+
+
+###### BUILD FUNCTIONS ######
 
 func _build_path():
 	var tile_set = tile_map_layer.tile_set
@@ -106,28 +115,9 @@ func _find_shortest_routes():
 	# Apply flow directions to cells
 	for cell_info in flow_map.values():
 		_update_path_cells(cell_info)
-
-
-func _spawn_mob():
-	var entry_points = tile_map_layer.get_used_cells_by_id(-1, Vector2i(2,0), -1)
-	var entry_point: Vector2i
-	
-	if len(entry_points) > 0:
-		entry_point = entry_points.pick_random()
-	
-	var world_pos = tile_map_layer.map_to_local(entry_point)
-	var tile_size = tile_map_layer.tile_set.tile_size.x
-	var x_fuzz = randi_range(-tile_size, tile_size)
-	var y_fuzz = randi_range(-tile_size, tile_size)
-	world_pos += Vector2(x_fuzz, y_fuzz)
-	
-	var new_mob = mob_scene.instantiate()
-	new_mob.position = world_pos
-	
-	add_child(new_mob)
 	
 
-###### HELPER FUNCTIONS ######
+###### BUILD HELPER FUNCTIONS ######
 
 func _update_flow_map(new_tile):
 	var tile = new_tile["tile"]
@@ -152,7 +142,57 @@ func _update_path_cells(cell_info):
 	cell.flow_vector = vector
 
 
+###### RUN FUNCTIONS ######
+
+func _wave_starter() -> void:
+	if main.current_wave <= len(WavesData.waves):
+		current_wave_data = WavesData.waves[main.current_wave]
+		_handle_next_wave_event()
+	else:
+		Events.wave_finished.emit()
+
+
+func _spawn_mob(type: String):
+	print("spawning mob of type: %s" % type)
+	var entry_points = tile_map_layer.get_used_cells_by_id(-1, Vector2i(2,0), -1)
+	var entry_point: Vector2i
+	
+	if len(entry_points) > 0:
+		entry_point = entry_points.pick_random()
+	
+	var world_pos = tile_map_layer.map_to_local(entry_point)
+	var tile_size = tile_map_layer.tile_set.tile_size.x
+	var x_fuzz = randi_range(-tile_size, tile_size)
+	var y_fuzz = randi_range(-tile_size, tile_size)
+	world_pos += Vector2(x_fuzz, y_fuzz)
+	
+	var new_mob = mob_scene.instantiate()
+	new_mob.position = world_pos
+	
+	if type == "big":
+		new_mob.scale = Vector2(2,2)
+	
+	add_child(new_mob)
+	
+	
+func _handle_next_wave_event() -> void:
+	if not current_wave_data.is_empty():
+		var current_event = current_wave_data.pop_front()
+		
+		_spawn_mob(current_event["type"])
+		
+		t.wait_time = current_event["delay"]
+		t.start()
+	
+	else:
+		Events.wave_finished.emit()
+	
+
+
 ###### Signals ######
 
+func _on_wave_started() -> void:
+	_wave_starter()
+
 func _on_timer_timeout() -> void:
-	_spawn_mob()
+	_handle_next_wave_event()

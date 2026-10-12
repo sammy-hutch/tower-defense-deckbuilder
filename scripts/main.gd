@@ -5,10 +5,16 @@ extends Node2D
 @onready var tilemap_layer = $Map/TileMapLayer
 @onready var map_window: Control = $CanvasLayer/UI/VBoxContainer/MainView/MapWindow
 
+var current_wave: int = 0
+var total_waves: int = 10
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	#await get_tree().process_frame
+	# setup signals
+	Events.wave_start_requested.connect(_on_wave_start_requested)
+	Events.wave_finish_requested.connect(_on_wave_finish_requested)
 	
+	# setup Camera & zoom
 	var viewport_width = ProjectSettings.get_setting("display/window/size/viewport_width")
 	var viewport_height = ProjectSettings.get_setting("display/window/size/viewport_height")
 
@@ -33,9 +39,22 @@ func _ready() -> void:
 	
 	var map_center = map_rect.position * tile_map.tile_set.tile_size + map_pixel_size / 2
 	camera_2d.global_position = map_center
+	
+	# setup children data
+	var path = map.get_node("Path")
+	path.main = self
 
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
+
+
+func _on_wave_start_requested() -> void:
+	current_wave += 1
+	if current_wave <= total_waves:
+		Events.wave_started.emit()
+
+func _on_wave_finish_requested() -> void:
+	Events.wave_finished.emit()

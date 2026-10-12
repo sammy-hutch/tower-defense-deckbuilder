@@ -5,7 +5,7 @@ extends Node2D
 
 const arrow_scene = preload("res://scenes/arrow.tscn")
 
-@export var cooldown_time: float = 5.0
+@export var cooldown_time: float = 3.0
 
 var ready_to_attack: bool = true
 var mobs_in_range: Array = []

@@ -4,7 +4,7 @@ extends CharacterBody2D
 
 var current_tiles: Array = []
 var direction: Vector2
-var speed: float = 20.0
+var speed: float = 30.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
